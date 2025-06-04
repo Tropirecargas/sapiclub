@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapi Club - Gaming & Tech</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Navegación */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(30, 64, 175, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(30, 64, 175, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            animation: slideInLeft 1s ease;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            animation: slideInRight 1s ease;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #60a5fa;
+            transform: translateY(-2px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: #60a5fa;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url('images/RECARGAS.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease 0.5s both;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 1s both;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #1e40af;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 1.5s both;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);
+        }
+
+        /* Servicios */
+        .services {
+            padding: 5rem 2rem;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #1e40af;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .section-description {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(30, 64, 175, 0.2);
+            border-color: #3b82f6;
+        }
+
+        .service-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .service-card h3 {
+            color: #1e40af;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .service-card p {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .service-btn {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .service-btn:hover {
+            background: linear-gradient(45deg, #1d4ed8, #1e40af);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Carrusel móvil */
+        @media (max-width: 768px) {
+            .services-grid {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+
+            .service-card {
+                min-width: 280px;
+                scroll-snap-align: center;
+            }
+
+            .services-grid::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .services-grid::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+
+            .services-grid::-webkit-scrollbar-thumb {
+                background: #3b82f6;
+                border-radius: 10px;
+            }
+        }
+
+        /* Características */
+        .features {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .accordion {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            animation: fadeInUp 1s ease;
+        }
+
+        .accordion-header {
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(45deg, #1d4ed8, #2563eb);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .accordion-content.active {
+            max-height: 200px;
+        }
+
+        .accordion-content p {
+            padding: 1.5rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .accordion-icon.active {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .footer p {
+            color: #bfdbfe;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Botón scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(45deg, #1e40af, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: linear-gradient(45deg, #1d4ed8, #2563eb);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.4);
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Intersection Observer animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gaming theme enhancements */
+        .gaming-icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">SapiClub</a>
+            <ul class="nav-menu">
+                <li><a href="#services" class="nav-link">SERVICIOS</a></li>
+                <li><a href="#features" class="nav-link">CARACTERÍSTICAS</a></li>
+                <li><a href="#contact" class="nav-link">CONTACTO</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>SC RECARGAS</h1>
+            <p>Tu destino definitivo para gaming, entretenimiento digital. Únete a nuestra comunidad y descubre un mundo de posibilidades.</p>
+            <a href="#services" class="btn">Explorar Servicios</a>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title fade-in">🚀 Nuestros Servicios</h2>
+            <p class="section-description fade-in">Descubre todo lo que tenemos para ofrecerte en el mundo del gaming y entretenimiento.</p>
+            
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <img src="/images/free fire.jpg" alt="Gaming Setup">
+                    <h3>🎮 FREE FIRE</h3>
+                    <p>RECARGA DE DIAMANTES <br>136.00 Bs - 1435.00 Bs <br>⭐⭐⭐⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <img src="/images/blood strike.jpg" alt="Streaming">
+                    <h3>🎮 BLOOD STRIKE</h3>
+                    <p>RECARGA DE ORO <br>0.00 Bs - 0.00 Bs <br>⭐⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <img src="/images/Zinli.jpg" alt="Tech Support">
+                    <h3>💳 ZINLI</h3>
+                    <p>RECARGA DE BILLETERA <br>1.00 $ - 50.00 $ <br>⭐⭐⭐⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <img src="/images/Netflix.jpg" alt="Community">
+                    <h3>📺 NETFLIX</h3>
+                    <p>ENTRETENIMIENTO <br>4.00 $ - 10.00 $ <br>⭐⭐⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <img src="/images/Tiktok.png" alt="Reviews">
+                    <h3>📱 TIKTOK</h3>
+                    <p>ENTRETENIMIENTO <br>0.20 $ - 20.00 $ <br>⭐⭐⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+                
+                <div class="service-card fade-in">
+                    <img src="/images/mobile legends.jpg" alt="Coaching">
+                    <h3>🎮 MOBILE LEGENDS</h3>
+                    <p>RECARGA DE DIAMANTES <br>0.00 Bs - 0.00 Bs <br>⭐⭐</p>
+                    <button class="service-btn">Más Info</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Características -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title fade-in">✨ ¿Por qué elegir SC RECARGAS?</h2>
+            <p class="section-description fade-in">Conoce las características que nos hacen la mejor opción.</p>
+            
+            <div class="accordion">
+                <div class="accordion-item fade-in">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h3>🎯 Experiencia</h3>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Contamos con más de 1 años de experiencia en el mundo de las recargas, trabajando con torneos, y gamers casuales. Nuestro equipo está formado por verdaderos apasionados de los videojuegos.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item fade-in">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h3>⚡ Tiempo</h3>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Nos encargamos para ofrecer una respuesta rápida y eficiente, en menos de 30 minutos y procesar todas las recargas en la menor cantidad de tiempo posible.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item fade-in">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h3>🌟 Atencion</h3>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Nuestro equipo está disponible de lunes a sábado de 8:30 am. a 9:30 pm. puedes contactar con nosotros durante nuestro horario de servicio para que podamos ayudarte con gusto.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item fade-in">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h3>💎 Servicios</h3>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Ofrecemos servicios de calidad a precios justos. Creemos que todos merecen acceso al mejor entretenimiento y mundo de los videojuegos, sin importar su presupuesto.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <h3>🎮 Contacto SC RECARGAS</h3>
+            <p>📧 Email: screcargas2024@gmail.com | 📱 WhatsApp: +58 412 3770260</p>
+            <p style="margin-top: 2rem;"> SC RECARGAS 2024.</p>
+        </div>
+    </footer>
+
+    <!-- Botón scroll to top -->
+    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const scrollTop = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+                scrollTop.classList.add('visible');
+            } else {
+                navbar.classList.remove('scrolled');
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Accordion functionality
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.accordion-icon');
+            
+            // Close all other accordions
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('active');
+                    item.previousElementSibling.querySelector('.accordion-icon').classList.remove('active');
+                }
+            });
+            
+            // Toggle current accordion
+            content.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add stagger animation to service cards
+        window.addEventListener('load', function() {
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+
+        // Add some gaming-style interactions
+        document.querySelectorAll('.service-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.05)';
+                }, 100);
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
