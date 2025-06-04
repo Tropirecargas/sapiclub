@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sapi Club - Gaming & Tech</title>
+    <title>SC RECARGAS</title>
     <style>
         * {
             margin: 0;
@@ -85,6 +85,78 @@
         .nav-link:hover::after {
             width: 100%;
         }
+
+    
+        /* Menú hamburguesa */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+/* Animación del hamburguesa */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background: rgba(30, 64, 175, 0.98);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        padding: 2rem 0;
+        gap: 0;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-menu li {
+        margin: 1rem 0;
+    }
+
+    .nav-link {
+        font-size: 1.2rem;
+        padding: 1rem;
+        display: block;
+    }
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+}
 
         /* Hero Section */
         .hero {
@@ -453,16 +525,24 @@
 </head>
 <body>
     <!-- Navegación -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">SapiClub</a>
-            <ul class="nav-menu">
-                <li><a href="#services" class="nav-link">SERVICIOS</a></li>
-                <li><a href="#features" class="nav-link">CARACTERÍSTICAS</a></li>
-                <li><a href="#contact" class="nav-link">CONTACTO</a></li>
-            </ul>
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="#home" class="logo">🎮 Sapi Club</a>
+        
+        <!-- Botón hamburguesa -->
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </nav>
+        
+        <ul class="nav-menu" id="nav-menu">
+            <li><a href="#services" class="nav-link">SERVICIOS</a></li>
+            <li><a href="#features" class="nav-link">CARACTERÍSTICAS</a></li>
+            <li><a href="#contact" class="nav-link">CONTACTO</a></li>
+        </ul>
+    </div>
+</nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -681,6 +761,31 @@
                 }, 200);
             });
         });
+
+        // Menú hamburguesa
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+
+hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
+
+// Cerrar menú al hacer clic en un enlace
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
+
+// Cerrar menú al hacer scroll
+window.addEventListener('scroll', function() {
+    if (navMenu.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    }
+});
     </script>
 </body>
 </html>
