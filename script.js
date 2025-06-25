@@ -8,8 +8,16 @@ const EMAILJS_CONFIG = {
   publicKey: "PkdJgcdPVxft1urrI",
 }
 
-// Initialize EmailJS
-emailjs.init(EMAILJS_CONFIG.publicKey)
+// Initialize EmailJS when page loads
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize EmailJS
+  emailjs.init(EMAILJS_CONFIG.publicKey)
+
+  // Initialize app
+  generatePackages()
+  setupEventListeners()
+  updateProgress()
+})
 
 // Global Variables
 let currentStep = 1
@@ -84,16 +92,14 @@ const packages = [
   },
 ]
 
-// Initialize App
-document.addEventListener("DOMContentLoaded", () => {
-  generatePackages()
-  setupEventListeners()
-  updateProgress()
-})
-
 // Generate Package Cards
 function generatePackages() {
   const grid = document.getElementById("packagesGrid")
+  if (!grid) {
+    console.error("No se encontró el elemento packagesGrid")
+    return
+  }
+
   grid.innerHTML = ""
 
   packages.forEach((pkg) => {
@@ -115,11 +121,14 @@ function generatePackages() {
 
     grid.appendChild(card)
   })
+
+  console.log("Paquetes generados:", packages.length)
 }
 
 // Select Package
 function selectPackage(pkg) {
   selectedPackage = pkg
+  console.log("Paquete seleccionado:", pkg)
 
   // Update visual selection
   document.querySelectorAll(".package-card").forEach((card) => {
@@ -128,8 +137,11 @@ function selectPackage(pkg) {
   event.currentTarget.classList.add("selected")
 
   // Update amount in step 3
-  document.getElementById("amountValue").textContent = pkg.price
-  document.getElementById("selectedPackageTitle").textContent = pkg.title
+  const amountElement = document.getElementById("amountValue")
+  const titleElement = document.getElementById("selectedPackageTitle")
+
+  if (amountElement) amountElement.textContent = pkg.price
+  if (titleElement) titleElement.textContent = pkg.title
 
   // Auto advance to next step
   setTimeout(() => {
@@ -140,25 +152,34 @@ function selectPackage(pkg) {
 // Setup Event Listeners
 function setupEventListeners() {
   // User Data Form
-  document.getElementById("userDataForm").addEventListener("submit", (e) => {
-    e.preventDefault()
+  const userForm = document.getElementById("userDataForm")
+  if (userForm) {
+    userForm.addEventListener("submit", (e) => {
+      e.preventDefault()
 
-    formData.phone = document.getElementById("phone").value
-    formData.playerId = document.getElementById("playerId").value
+      formData.phone = document.getElementById("phone").value
+      formData.playerId = document.getElementById("playerId").value
 
-    if (formData.phone && formData.playerId) {
-      nextStep()
-    }
-  })
+      if (formData.phone && formData.playerId) {
+        nextStep()
+      }
+    })
+  }
 
   // Confirmation Form
-  document.getElementById("confirmationForm").addEventListener("submit", (e) => {
-    e.preventDefault()
-    submitOrder()
-  })
+  const confirmForm = document.getElementById("confirmationForm")
+  if (confirmForm) {
+    confirmForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+      submitOrder()
+    })
+  }
 
   // Set today's date as default
-  document.getElementById("paymentDate").valueAsDate = new Date()
+  const dateInput = document.getElementById("paymentDate")
+  if (dateInput) {
+    dateInput.valueAsDate = new Date()
+  }
 }
 
 // Navigation Functions
@@ -185,7 +206,10 @@ function updateStepDisplay() {
   })
 
   // Show current step content
-  document.getElementById(`content${currentStep}`).classList.add("active")
+  const currentContent = document.getElementById(`content${currentStep}`)
+  if (currentContent) {
+    currentContent.classList.add("active")
+  }
 }
 
 function updateProgress() {
@@ -195,14 +219,20 @@ function updateProgress() {
     const line = document.getElementById(`line${i}`)
 
     if (i < currentStep) {
-      step.classList.add("completed")
-      step.classList.remove("active")
+      if (step) {
+        step.classList.add("completed")
+        step.classList.remove("active")
+      }
       if (line) line.classList.add("active")
     } else if (i === currentStep) {
-      step.classList.add("active")
-      step.classList.remove("completed")
+      if (step) {
+        step.classList.add("active")
+        step.classList.remove("completed")
+      }
     } else {
-      step.classList.remove("active", "completed")
+      if (step) {
+        step.classList.remove("active", "completed")
+      }
       if (line) line.classList.remove("active")
     }
   }
@@ -211,19 +241,38 @@ function updateProgress() {
 // Copy Functions
 function copyText(text) {
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast("Copiado al portapapeles")
-    })
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        showToast("Copiado al portapapeles")
+      })
+      .catch(() => {
+        fallbackCopy(text)
+      })
   } else {
-    // Fallback for older browsers
-    const textArea = document.createElement("textarea")
-    textArea.value = text
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand("copy")
-    document.body.removeChild(textArea)
-    showToast("Copiado al portapapeles")
+    fallbackCopy(text)
   }
+}
+
+function fallbackCopy(text) {
+  const textArea = document.createElement("textarea")
+  textArea.value = text
+  textArea.style.position = "fixed"
+  textArea.style.left = "-999999px"
+  textArea.style.top = "-999999px"
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+
+  try {
+    document.execCommand("copy")
+    showToast("Copiado al portapapeles")
+  } catch (err) {
+    console.error("Error al copiar:", err)
+    showToast("Error al copiar")
+  }
+
+  document.body.removeChild(textArea)
 }
 
 function copyAllInfo() {
@@ -237,8 +286,15 @@ Monto: ${selectedPackage?.price || "Bs 108"}`
 
 // Toast Notification
 function showToast(message) {
+  // Remove existing toast
+  const existingToast = document.querySelector(".toast")
+  if (existingToast) {
+    existingToast.remove()
+  }
+
   // Create toast element
   const toast = document.createElement("div")
+  toast.className = "toast"
   toast.style.cssText = `
         position: fixed;
         top: 20px;
@@ -248,53 +304,79 @@ function showToast(message) {
         padding: 12px 24px;
         border-radius: 8px;
         z-index: 3000;
-        animation: slideIn 0.3s ease;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideInRight 0.3s ease;
     `
   toast.textContent = message
 
   document.body.appendChild(toast)
 
   setTimeout(() => {
-    toast.remove()
+    if (toast.parentNode) {
+      toast.remove()
+    }
   }, 3000)
 }
 
 // Modal Functions
 function showTerms() {
-  document.getElementById("termsModal").classList.add("show")
+  const modal = document.getElementById("termsModal")
+  if (modal) {
+    modal.classList.add("show")
+  }
 }
 
 function closeTerms() {
-  document.getElementById("termsModal").classList.remove("show")
+  const modal = document.getElementById("termsModal")
+  if (modal) {
+    modal.classList.remove("show")
+  }
 }
 
 function showSuccess() {
-  document.getElementById("responsePhone").textContent = formData.phone
-  document.getElementById("successModal").classList.add("show")
+  const phoneElement = document.getElementById("responsePhone")
+  const modal = document.getElementById("successModal")
+
+  if (phoneElement) {
+    phoneElement.textContent = formData.phone
+  }
+  if (modal) {
+    modal.classList.add("show")
+  }
 }
 
 function closeSuccess() {
-  document.getElementById("successModal").classList.remove("show")
+  const modal = document.getElementById("successModal")
+  if (modal) {
+    modal.classList.remove("show")
+  }
   resetForm()
 }
 
 function showLoading() {
-  document.getElementById("loadingOverlay").classList.add("show")
+  const overlay = document.getElementById("loadingOverlay")
+  if (overlay) {
+    overlay.classList.add("show")
+  }
 }
 
 function hideLoading() {
-  document.getElementById("loadingOverlay").classList.remove("show")
+  const overlay = document.getElementById("loadingOverlay")
+  if (overlay) {
+    overlay.classList.remove("show")
+  }
 }
 
 // Submit Order
 async function submitOrder() {
   // Get form data
-  formData.bank = document.getElementById("bank").value
-  formData.holderCedula = document.getElementById("holderCedula").value
-  formData.holderPhone = document.getElementById("holderPhone").value
-  formData.paymentDate = document.getElementById("paymentDate").value
-  formData.reference = document.getElementById("reference").value
-  formData.acceptTerms = document.getElementById("acceptTerms").checked
+  formData.bank = document.getElementById("bank")?.value || ""
+  formData.holderCedula = document.getElementById("holderCedula")?.value || ""
+  formData.holderPhone = document.getElementById("holderPhone")?.value || ""
+  formData.paymentDate = document.getElementById("paymentDate")?.value || ""
+  formData.reference = document.getElementById("reference")?.value || ""
+  formData.acceptTerms = document.getElementById("acceptTerms")?.checked || false
 
   // Validate form
   if (!validateForm()) {
@@ -316,8 +398,10 @@ async function submitOrder() {
       payment_date: formData.paymentDate,
       payment_reference: formData.reference,
       order_date: new Date().toLocaleString("es-VE"),
-      to_email: "screcargas2024@gmail.com", // Cambiado a tu email
+      to_email: "screcargas2024@gmail.com",
     }
+
+    console.log("Enviando email con datos:", emailData)
 
     // Send email using EmailJS
     const response = await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, emailData)
@@ -344,14 +428,15 @@ function validateForm() {
 
   for (const field of requiredFields) {
     const element = document.getElementById(field.id)
-    if (!element.value.trim()) {
+    if (!element || !element.value.trim()) {
       alert(`Por favor, complete el campo: ${field.name}`)
-      element.focus()
+      if (element) element.focus()
       return false
     }
   }
 
-  if (!document.getElementById("acceptTerms").checked) {
+  const termsCheckbox = document.getElementById("acceptTerms")
+  if (!termsCheckbox || !termsCheckbox.checked) {
     alert("Debe aceptar los términos y condiciones")
     return false
   }
@@ -394,7 +479,10 @@ function resetForm() {
   updateProgress()
 
   // Set today's date again
-  document.getElementById("paymentDate").valueAsDate = new Date()
+  const dateInput = document.getElementById("paymentDate")
+  if (dateInput) {
+    dateInput.valueAsDate = new Date()
+  }
 }
 
 // Close modals when clicking outside
@@ -403,3 +491,19 @@ document.addEventListener("click", (e) => {
     e.target.classList.remove("show")
   }
 })
+
+// Add CSS animation for toast
+const style = document.createElement("style")
+style.textContent = `
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`
+document.head.appendChild(style)
