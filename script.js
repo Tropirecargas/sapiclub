@@ -316,7 +316,7 @@ async function submitOrder() {
       payment_date: formData.paymentDate,
       payment_reference: formData.reference,
       order_date: new Date().toLocaleString("es-VE"),
-      to_email: "tu-email@gmail.com", // Cambia esto por tu email
+      to_email: "screcargas2024@gmail.com", // Cambiado a tu email
     }
 
     // Send email using EmailJS
